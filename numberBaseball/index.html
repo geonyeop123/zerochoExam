@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number-Baseball</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="index.js"></script>
+  </head>
+  <body>
+    <div class="title">
+      <h1>Welcome to Number-Baseball Game</h1>
+    </div>
+    <div class="answerContainer">
+      <h1 id="answerText">? ? ?</h1>
+      <h1 id="resultText"></h1>
+    </div>
+    <div class="resultContainer">
+      <div class="stateContainer">
+        <h2 id="stateText"></h2>
+      </div>
+      <div class="submitContainer">
+        <input onkeyup="enterkey();" type="number" />
+        <button id="submit">확인</button>
+      </div>
+    </div>
+    <div id="pastResult"></div>
+  </body>
+</html>
