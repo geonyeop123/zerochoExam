@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>가위바위보</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      #computer {
+        width: 142px;
+        height: 200px;
+        background-position: 0 0;
+      }
+      button {
+        width: 70px;
+        height: 40px;
+        margin: 0 5px;
+        text-align: center;
+      }
+      button:nth-child(2) {
+        font-size: 11px;
+      }
+      .RSP {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="computer"></div>
+    <div class="RSP">
+      <button id="rock">ROCK</button>
+      <button id="scissors">SCISSORS</button>
+      <button id="paper">PAPER</button>
+    </div>
+    <h2 class="score"></h2>
+    <script src="index.js"></script>
+  </body>
+</html>
