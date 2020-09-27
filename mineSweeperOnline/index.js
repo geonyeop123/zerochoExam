@@ -5,6 +5,7 @@ const tbody = document.querySelector("tbody");
 let dataset = [];
 function makeGame(width, height, mine) {
   tbody.innerHTML = "";
+  dataset = [];
   let i, j, temp;
   let condidate = Array(width * height)
     .fill()
@@ -17,6 +18,7 @@ function makeGame(width, height, mine) {
       condidate.splice(Math.floor(Math.random() * condidate.length), 1)[0]
     );
   }
+  console.log(mineNumber);
   for (i = 0; i < width; i++) {
     const tr = document.createElement("tr");
     tbody.appendChild(tr);
