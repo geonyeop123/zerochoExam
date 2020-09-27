@@ -5,11 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mine Sweeper Online</title>
     <script defer src="index.js"></script>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      #gameButton {
+        width: 20px;
+        height: 20px;
+        border: 1px solid black;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
-    <input type="number" id="width" placeholder="가로" />
-    <input type="number" id="height" placeholder="세로" />
-    <input type="number" id="mine" placeholder="지뢰" />
+    <input type="number" id="width" placeholder="가로" value="10" />
+    <input type="number" id="height" placeholder="세로" value="10" />
+    <input type="number" id="mine" placeholder="지뢰" value="20" />
     <button id="startBtn">실행</button>
     <table id="table">
       <thead>
