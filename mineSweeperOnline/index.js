@@ -58,7 +58,7 @@ function makeGame(width, height, mine) {
         const tr = e.target.parentNode;
         const width = Array.prototype.indexOf.call(tbody.children, tr);
         const height = Array.prototype.indexOf.call(tr.children, td);
-        if (td.textContent === "X") {
+        if (dataset[width][height] === "X") {
           td.textContent = "펑";
         } else {
           let aroundMine = [
