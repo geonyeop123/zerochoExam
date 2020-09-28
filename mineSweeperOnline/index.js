@@ -33,7 +33,6 @@ function makeGame(width, height, mine) {
         td.textContent = "X";
       } else {
         arr.push(1);
-        td.textContent = 1;
       }
       td.addEventListener("contextmenu", (e) => {
         e.preventDefault();
@@ -42,16 +41,49 @@ function makeGame(width, height, mine) {
         const width = Array.prototype.indexOf.call(tbody.children, tr);
         const height = Array.prototype.indexOf.call(tr.children, td);
         const value = e.target.textContent;
-        if (value === "1" || value === "X") {
+        if (value === "" || value === "X") {
           e.target.textContent = "!";
         } else if (value === "!") {
           e.target.textContent = "?";
         } else if (value === "?") {
           if (dataset[width][height] === 1) {
-            e.target.textContent = "1";
+            e.target.textContent = "";
           } else {
             e.target.textContent = "X";
           }
+        }
+      });
+      td.addEventListener("click", (e) => {
+        const tbody = e.target.parentNode.parentNode;
+        const tr = e.target.parentNode;
+        const width = Array.prototype.indexOf.call(tbody.children, tr);
+        const height = Array.prototype.indexOf.call(tr.children, td);
+        if (td.textContent === "X") {
+          td.textContent = "펑";
+        } else {
+          let aroundMine = [
+            dataset[width][height - 1],
+            dataset[width][height],
+            dataset[width][height + 1],
+          ];
+          if (dataset[width - 1]) {
+            aroundMine = aroundMine.concat([
+              dataset[width - 1][height - 1],
+              dataset[width - 1][height],
+              dataset[width - 1][height + 1],
+            ]);
+          }
+          if (dataset[width + 1]) {
+            aroundMine = aroundMine.concat([
+              dataset[width + 1][height - 1],
+              dataset[width + 1][height],
+              dataset[width + 1][height + 1],
+            ]);
+          }
+          const mineAmount = aroundMine.filter((n) => {
+            return n === "X";
+          }).length;
+          td.textContent = mineAmount;
         }
       });
       tr.appendChild(td);
