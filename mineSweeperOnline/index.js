@@ -1,12 +1,22 @@
 "use strict";
 const startBtn = document.querySelector("#startBtn");
 const tbody = document.querySelector("tbody");
-
+const resultTag = document.querySelector("#result");
+const timerTag = document.querySelector(".timer");
+let blockAmount, openBlock;
 let dataset = [];
+
+const dataValue = {
+  default: 0,
+  mine: "X",
+  Open: 1,
+};
+
 function makeGame(width, height, mine) {
-  tbody.innerHTML = "";
-  dataset = [];
-  let i, j, temp;
+  resetGame(width, height, mine);
+  let i,
+    j,
+    temp = 0;
   let condidate = Array(width * height)
     .fill()
     .map((n, index) => {
@@ -18,21 +28,20 @@ function makeGame(width, height, mine) {
       condidate.splice(Math.floor(Math.random() * condidate.length), 1)[0]
     );
   }
-  console.log(mineNumber);
   for (i = 0; i < width; i++) {
     const tr = document.createElement("tr");
     tbody.appendChild(tr);
     let arr = [];
     dataset.push(arr);
     for (j = 0; j < height; j++) {
-      temp = i * 10 + j;
+      temp++;
       const td = document.createElement("td");
       td.id = "gameButton";
       if (mineNumber.includes(temp)) {
-        arr.push("X");
-        td.textContent = "X";
+        arr.push(dataValue.mine);
+        td.textContent = "";
       } else {
-        arr.push(1);
+        arr.push(dataValue.default);
       }
       td.addEventListener("contextmenu", (e) => {
         e.preventDefault();
@@ -43,13 +52,19 @@ function makeGame(width, height, mine) {
         const value = e.target.textContent;
         if (value === "" || value === "X") {
           e.target.textContent = "!";
+          e.target.classList.add("flag");
         } else if (value === "!") {
           e.target.textContent = "?";
         } else if (value === "?") {
-          if (dataset[width][height] === 1) {
-            e.target.textContent = "";
-          } else {
+          if (
+            dataset[width][height] === dataValue.default ||
+            dataset[width][height] === dataValue.open
+          ) {
+            e.currentTarget.textContent = "";
+            e.target.classList.remove("flag");
+          } else if (dataset[width][height] === dataValue.mine) {
             e.target.textContent = "X";
+            e.target.classList.remove("flag");
           }
         }
       });
@@ -58,37 +73,90 @@ function makeGame(width, height, mine) {
         const tr = e.target.parentNode;
         const width = Array.prototype.indexOf.call(tbody.children, tr);
         const height = Array.prototype.indexOf.call(tr.children, td);
-        if (dataset[width][height] === "X") {
+        const blockValue = e.target.textContent;
+        if (
+          dataset[width][height] === dataValue.open ||
+          blockValue === "?" ||
+          blockValue === "!"
+        ) {
+          return;
+        }
+        e.currentTarget.classList.add("opened");
+        openBlock++;
+        if (openBlock === blockAmount) {
+          resultTag.textContent = "승리!";
+        }
+        if (dataset[width][height] === dataValue.mine) {
           td.textContent = "펑";
+          window.alert("패배하였습니다. 다시 하시겠습니까?");
         } else {
-          let aroundMine = [
-            dataset[width][height - 1],
-            dataset[width][height],
-            dataset[width][height + 1],
-          ];
-          if (dataset[width - 1]) {
-            aroundMine = aroundMine.concat([
-              dataset[width - 1][height - 1],
-              dataset[width - 1][height],
-              dataset[width - 1][height + 1],
-            ]);
-          }
-          if (dataset[width + 1]) {
-            aroundMine = aroundMine.concat([
-              dataset[width + 1][height - 1],
-              dataset[width + 1][height],
-              dataset[width + 1][height + 1],
-            ]);
-          }
-          const mineAmount = aroundMine.filter((n) => {
-            return n === "X";
-          }).length;
-          td.textContent = mineAmount;
+          td.textContent = searchMine(width, height);
         }
       });
       tr.appendChild(td);
     }
   }
+}
+
+function resetGame(width, height, mine) {
+  blockAmount = width * height - mine;
+  openBlock = 0;
+  tbody.innerHTML = "";
+  dataset = [];
+  resultTag.textContent = "";
+}
+
+function searchMine(width, height) {
+  dataset[width][height] = dataValue.open;
+  let aroundMine = [
+    dataset[width][height - 1],
+    dataset[width][height],
+    dataset[width][height + 1],
+  ];
+  if (dataset[width - 1]) {
+    aroundMine = aroundMine.concat([
+      dataset[width - 1][height - 1],
+      dataset[width - 1][height],
+      dataset[width - 1][height + 1],
+    ]);
+  }
+  if (dataset[width + 1]) {
+    aroundMine = aroundMine.concat([
+      dataset[width + 1][height - 1],
+      dataset[width + 1][height],
+      dataset[width + 1][height + 1],
+    ]);
+  }
+  const mineAmount = aroundMine.filter((n) => {
+    return n === "X";
+  }).length;
+  if (mineAmount === 0) {
+    let aroundBlock = [
+      tbody.children[width].children[height - 1],
+      tbody.children[width].children[height],
+      tbody.children[width].children[height + 1],
+    ];
+    if (tbody.children[width - 1]) {
+      aroundBlock = aroundBlock.concat([
+        tbody.children[width - 1].children[height - 1],
+        tbody.children[width - 1].children[height],
+        tbody.children[width - 1].children[height + 1],
+      ]);
+    }
+    if (tbody.children[width + 1]) {
+      aroundBlock = aroundBlock.concat([
+        tbody.children[width + 1].children[height - 1],
+        tbody.children[width + 1].children[height],
+        tbody.children[width + 1].children[height + 1],
+      ]);
+    }
+    aroundBlock
+      .filter((v) => !!v)
+      .forEach((around) => {
+        around.click();
+      });
+  }
+  return mineAmount;
 }
 
 startBtn.addEventListener("click", () => {

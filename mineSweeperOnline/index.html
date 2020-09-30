@@ -9,11 +9,21 @@
       table {
         border-collapse: collapse;
       }
-      #gameButton {
+      td.opened {
+        background-color: white;
+      }
+      td {
         width: 20px;
         height: 20px;
         border: 1px solid black;
         text-align: center;
+        background-color: #444;
+      }
+      td.flag {
+        color: white;
+      }
+      .timer {
+        color: white;
       }
     </style>
   </head>
@@ -25,10 +35,11 @@
     <table id="table">
       <thead>
         <tr>
-          <td><span id="timer">0</span>초</td>
+          <td class="timer">99</td>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
+    <h2 id="result"></h2>
   </body>
 </html>
