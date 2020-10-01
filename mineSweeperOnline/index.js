@@ -5,11 +5,11 @@ const resultTag = document.querySelector("#result");
 const timerTag = document.querySelector(".timer");
 let blockAmount, openBlock;
 let dataset = [];
-
+let gamePlay = 1;
 const dataValue = {
   default: 0,
   mine: "X",
-  Open: 1,
+  open: 1,
 };
 
 function makeGame(width, height, mine) {
@@ -39,12 +39,15 @@ function makeGame(width, height, mine) {
       td.id = "gameButton";
       if (mineNumber.includes(temp)) {
         arr.push(dataValue.mine);
-        td.textContent = "";
+        // td.textContent = "X";
       } else {
         arr.push(dataValue.default);
       }
       td.addEventListener("contextmenu", (e) => {
         e.preventDefault();
+        if (!gamePlay) {
+          return;
+        }
         const tbody = e.target.parentNode.parentNode;
         const tr = e.target.parentNode;
         const width = Array.prototype.indexOf.call(tbody.children, tr);
@@ -63,7 +66,7 @@ function makeGame(width, height, mine) {
             e.currentTarget.textContent = "";
             e.target.classList.remove("flag");
           } else if (dataset[width][height] === dataValue.mine) {
-            e.target.textContent = "X";
+            e.target.textContent = "";
             e.target.classList.remove("flag");
           }
         }
@@ -77,7 +80,8 @@ function makeGame(width, height, mine) {
         if (
           dataset[width][height] === dataValue.open ||
           blockValue === "?" ||
-          blockValue === "!"
+          blockValue === "!" ||
+          !gamePlay
         ) {
           return;
         }
@@ -85,12 +89,23 @@ function makeGame(width, height, mine) {
         openBlock++;
         if (openBlock === blockAmount) {
           resultTag.textContent = "승리!";
+          timerTag.textContent = "WIN";
         }
         if (dataset[width][height] === dataValue.mine) {
-          td.textContent = "펑";
-          window.alert("패배하였습니다. 다시 하시겠습니까?");
+          td.textContent = "X";
+          setTimeout(() => {
+            if (
+              window.confirm("패배하셨습니다. 다시 하시겠습니까??") === true
+            ) {
+              startBtn.click();
+            } else {
+              gamePlay = 0;
+            }
+          }, 100);
         } else {
-          td.textContent = searchMine(width, height);
+          td.textContent = `${
+            searchMine(width, height) === 0 ? "" : searchMine(width, height)
+          }`;
         }
       });
       tr.appendChild(td);
@@ -104,6 +119,8 @@ function resetGame(width, height, mine) {
   tbody.innerHTML = "";
   dataset = [];
   resultTag.textContent = "";
+  timerTag.textContent = 99;
+  gamePlay = 1;
 }
 
 function searchMine(width, height) {
