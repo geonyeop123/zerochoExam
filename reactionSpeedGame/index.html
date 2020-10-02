@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reaction Speed Game</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      #screen {
+        width: 500px;
+        height: 300px;
+        font-size: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 20px;
+        color: white;
+        user-select: none;
+        flex-direction: column;
+      }
+      #screen.first {
+        background-color: blue;
+      }
+      #screen.waiting {
+        background-color: red;
+        color: black;
+      }
+      #screen.now {
+        background-color: rgb(47, 175, 47);
+      }
+      #screen.result {
+        background-color: blue;
+      }
+      #restartBtn {
+        font-size: 20px;
+        display: none;
+      }
+      #restartBtn.showing {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="screen" class="first">Click to start</div>
+    <button id="restartBtn">Restart</button>
+    <script src="index.js"></script>
+  </body>
+</html>
