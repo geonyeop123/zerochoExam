@@ -1,43 +1,64 @@
 "use strict";
 const tableTag = document.querySelector("table");
-const bodyTag = document.querySelector("body");
-const startBtn = document.querySelector('#startBtn');
-let i, j, count = 0;
+const bodyTag = document.body;
+let i, j, k,count = 0;
 let dataset = [];
-startBtn.addEventListener('click',()=>{
-  bodyTag.innerHTML = '';
-  dataset = [];
-  for (i = 0; i < 3; i++) {
-    const columnTag = document.createElement("column");
-    bodyTag.appendChild(columnTag);
-    const data = [];
-    for (j = 0; j < 3; j++) {
-      const divTag = document.createElement("div");
-      divTag.addEventListener("click", (e) => {
-        const body = e.target.parentNode.parentNode;
-        const column = e.target.parentNode;
-        const width = Array.prototype.indexOf.call(body.children, column) - 1;
-        const height = Array.prototype.indexOf.call(column.children, divTag);
-        if(dataset[width][height] === 1){
-          return
-        }
-        e.target.innerText = 'O';
-        dataset[width][height] = 1;
-        count++;
-        if(count === 9){
-          setTimeout(()=>{
-            const yesOrNo = confirm('게임이 종료되었습니다. 다시 하시겠습니까?');
-            if(yesOrNo){
-              console.log('hi');
-            }else{
-              console.log("bye");
-            }
-          },100)
-        }
-      });
-      columnTag.appendChild(divTag);
-      data.push(0);
-    }
-    dataset.push(data);
-  } 
-})
+let htmlDataset = [];
+const dataValue = {
+  notOpen : 0,
+  user : 1,
+  computer : 2,
+}
+function resetGame(){
+  count = 0;
+  i = 0;
+  //칸 비우기
+  htmlDataset.forEach((n)=>{
+    let k = 0;
+    n.forEach((j)=>{
+      j.innerText = '';
+      dataset[i][k] = 0;
+      k++;
+    })
+    i++;
+  });
+}
+// 승리 검사
+function lineCheck(){
+  
+}
+
+// htmlDataset과 dataset을 만드는 과정 및 게임판 그리기
+for (i = 0; i < 3; i++) {
+  const tr = document.createElement("tr");
+  tableTag.appendChild(tr);
+  const htmlData = [];
+  const data = [];
+  for (j = 0; j < 3; j++) {
+    const td = document.createElement("td");
+    td.addEventListener("click", (e) => {
+      const table = e.target.parentNode.parentNode;
+      const tr = e.target.parentNode;
+      const width = Array.prototype.indexOf.call(table.children, tr);
+      const height = Array.prototype.indexOf.call(tr.children, td);
+      if(dataset[width][height] !== dataValue.notOpen){
+        return;
+      }
+      e.target.innerText = 'O';
+      dataset[width][height] = dataValue.user;
+      count++;
+      if(count === 9){
+        setTimeout(()=>{
+          alert('승리하셨습니다!');
+          resetGame();
+        },100)
+      }
+
+    });
+    tr.appendChild(td);
+    htmlData.push(td);
+    data.push(0);
+  }
+  htmlDataset.push(htmlData);
+  dataset.push(data);
+} 
