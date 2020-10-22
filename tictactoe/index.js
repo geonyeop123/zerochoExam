@@ -14,6 +14,8 @@ const dataValue = {
 function resetGame(){
   count = 0;
   i = 0;
+  winner = '';
+  turn = 1;
   //칸 비우기
   htmlDataset.forEach((n)=>{
     let k = 0;
@@ -30,6 +32,7 @@ function winnerCheck(width, height){
   //가로검사
   if(dataset[width][0] === turn && dataset[width][1] === turn && dataset[width][2] === turn){
     winner = turn;
+    console.log(winner);
   }
   //세로검사
   if(dataset[0][height] === turn && dataset[1][height] === turn && dataset[2][height] === turn){
@@ -41,19 +44,53 @@ function winnerCheck(width, height){
   }else if(dataset[0][2] === turn && dataset[1][1] === turn && dataset[2][0] === turn){
     winner = turn;
   }
+    if(winner === 1){
+      setTimeout(()=>{
+        alert('승리하셨습니다 :)');
+      resetGame();
+      },100);
+    }else if(winner === 2){
+      setTimeout(()=>{
+        alert('패배하셨습니다 :(');
+      resetGame();
+      },100);
+    }
+    if(turn === dataValue.user){
+      turn = dataValue.computer;
+    }else if(turn === dataValue.computer){
+      turn = dataValue.user;
+    }
+    console.log(turn);
+}
+
+// 컴퓨터 클릭
+function computerClick(width,height){
+  dataset[width][height] = dataValue.computer;
+  htmlDataset[width][height].innerText = 'X';
+  winnerCheck(width,height);
+  count++;
 }
 
 // 컴퓨터 턴
 function computerTurn(){
-  turn = dataValue.computer;
-  console.log(turn);
-  setTimeout(()=>{
+  let width, height;
     if(dataset[1][1] === dataValue.notOpen){
-      const center = htmlDataset[1][1];
-      center.click();
+      width = 1;
+      height = 1;
+      setTimeout(()=>{
+        computerClick(width,height);
+      },1000)
+    }else{
+      width = Math.floor(Math.random() * 3);
+      height = Math.floor(Math.random() * 3);
+      if(dataset[width][height] !== dataValue.notOpen){
+        computerTurn();
+      }else{
+        setTimeout(()=>{
+          computerClick(width,height);
+        },1000)
+      }
     }
-    turn = dataValue.user;
-  },1000);
 }
 
 // htmlDataset과 dataset을 만드는 과정 및 게임판 그리기
@@ -65,6 +102,9 @@ for (i = 0; i < 3; i++) {
   for (j = 0; j < 3; j++) {
     const td = document.createElement("td");
     td.addEventListener("click", (e) => {
+      if(turn === 2){
+        return;
+      }
       const table = e.target.parentNode.parentNode;
       const tr = e.target.parentNode;
       const width = Array.prototype.indexOf.call(table.children, tr);
@@ -72,34 +112,21 @@ for (i = 0; i < 3; i++) {
       if(dataset[width][height] !== dataValue.notOpen){
         return;
       }
-      if(turn === dataValue.user){
         e.target.innerText = 'O';
-      }else if(turn === dataValue.computer){
-        e.target.innerText = 'X';
-      }
-      dataset[width][height] = dataValue[turn];
+      dataset[width][height] = turn;
       count++;
-      if(count >=5){
         winnerCheck(width,height);
-        if(winner === 1){
-          setTimeout(()=>{
-            alert('승리하셨습니다 :)');
-          resetGame();
-          },100);
-        }else if(winner === 2){
-          setTimeout(()=>{
-            alert('패배하셨습니다 :(');
-          resetGame();
-          },100);
-        }
-      }
       if(count === 9 && !winner){
         setTimeout(()=>{
           alert('무승부!');
           resetGame();
         },100)
       }
-      computerTurn();
+      turn = dataValue.computer;
+      if(!winner || count > 9){
+
+        computerTurn();
+      }
     });
     tr.appendChild(td);
     htmlData.push(td);
