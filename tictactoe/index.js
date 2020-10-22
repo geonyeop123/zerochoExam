@@ -72,7 +72,7 @@ function computerClick(width,height){
 }
 
 // 컴퓨터 턴
-function computerTurn(){
+function computerTurn(userWidth,userHeight){
   let width, height;
     if(dataset[1][1] === dataValue.notOpen){
       width = 1;
@@ -91,6 +91,7 @@ function computerTurn(){
         },1000)
       }
     }
+    // defence(userWidth,userHeight);
 }
 
 // htmlDataset과 dataset을 만드는 과정 및 게임판 그리기
@@ -123,9 +124,9 @@ for (i = 0; i < 3; i++) {
         },100)
       }
       turn = dataValue.computer;
-      if(!winner || count > 9){
+      if(!winner && count < 9){
 
-        computerTurn();
+        computerTurn(width,height);
       }
     });
     tr.appendChild(td);
@@ -135,3 +136,71 @@ for (i = 0; i < 3; i++) {
   htmlDataset.push(htmlData);
   dataset.push(data);
 } 
+
+
+
+// function defence(userWidth, userHeight){
+//   let checkLine = [];
+//   let computerCount = 0, userCount = 0;
+//   //가로검사
+//   checkLine = [dataset[userWidth][0],dataset[userWidth][1],dataset[userWidth][2]]
+//   checkLine.forEach((n)=>{
+//     if(n === 1){
+//       userCount++;
+//     }else if(n === 2){
+//       computerCount++;
+//     }else{
+//       height = n;
+//     }
+//     if(userCount === 2 || computerCount === 0){
+//       width = userWidth;
+//       return;
+//     }
+//   });
+//   //세로검사
+//   checkLine = [dataset[0][userHeight],dataset[1][userHeight],dataset[2][userHeight]]
+//   checkLine.forEach((n)=>{
+//     if(n === 1){
+//       userCount++;
+//     }else if(n === 2){
+//       computerCount++;
+//     }else{
+//       width = n;
+//     }
+//     if(userCount === 2 || computerCount === 0){
+//       height = userheight;
+//       return;
+//     }
+//   });
+//   //좌대각 검사
+//   checkLine = [dataset[0][0],dataset[1][1],dataset[2][2]]
+//   checkLine.forEach((n)=>{
+//     if(n === 1){
+//       userCount++;
+//     }else if(n === 2){
+//       computerCount++;
+//     }else{
+//       width = n;
+//       height = n;
+//     }
+//     if(userCount === 2 || computerCount === 0){
+//       return;
+//     }
+//   });
+//   //우대각검사
+//   checkLine = [dataset[0][2],dataset[1][1],dataset[2][0]]
+//   checkLine.forEach((n)=>{
+//     if(n === 1){
+//       userCount++;
+//     }else if(n === 2){
+//       computerCount++;
+//     }else{
+//       console.log(checkLine.indexOf(n));
+//     }
+//     if(userCount === 2 || computerCount === 0){
+//       height = userheight;
+//       return;
+//     }
+//   });
+//   console.log(checkLine,computerCount,userCount);
+// }
