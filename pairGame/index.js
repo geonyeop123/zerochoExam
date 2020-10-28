@@ -2,7 +2,8 @@
 const width = 3;
 const height = 4;
 let count = 0;
-let piarCard = 0;
+let pairCard = 0;
+let pastChooseColor;
 function makeCard(width, height) {
   let condidate = [
     "red",
@@ -45,7 +46,17 @@ function makeCard(width, height) {
       (function (c) {
         card.addEventListener("click", (e) => {
           c.classList.toggle("flipped");
-          console.log(e.target);
+          count++;
+          const clickCard = e.target.parentNode.children[1];
+          const chooseColor = clickCard.style.backgroundColor;
+          if (count === 1) {
+            pastChooseColor = chooseColor;
+          } else if (count === 2) {
+            if (pastChooseColor === chooseColor) {
+              pairCard++;
+            } else {
+            }
+          }
         });
       })(card);
       column.appendChild(card);
