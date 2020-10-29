@@ -4,7 +4,8 @@ const height = 4;
 let count = 0;
 let pairCard = 0;
 let pastChooseColor;
-let eventList = [];
+let openCard = [];
+let openedCard = [];
 function makeCard(width, height) {
   let condidate = [
     "red",
@@ -46,13 +47,15 @@ function makeCard(width, height) {
       cardInner.appendChild(cardBack);
       (function (c) {
         card.addEventListener("click", (e) => {
-          c.classList.toggle("flipped");
-          count++;
           const clickCard = e.target.parentNode.children[1];
           const chooseColor = clickCard.style.backgroundColor;
-          eventList.push(e.target);
-          console.log(e.target);
-          console.log(chooseColor, pastChooseColor);
+          const thisCard = e.target.parentNode.parentNode;
+          if (openCard.includes(thisCard) || openedCard.includes(thisCard)) {
+            return;
+          }
+          c.classList.toggle("flipped");
+          count++;
+          openCard.push(thisCard);
           if (count === 1) {
             pastChooseColor = chooseColor;
           } else if (count === 2) {
@@ -60,18 +63,30 @@ function makeCard(width, height) {
               pairCard++;
               count = 0;
               pastChooseColor = undefined;
-              eventList = [];
-              console.log("find!");
+
+              openCard.forEach((n) => {
+                openedCard.push(n);
+              });
+              openCard = [];
             } else {
               count = 0;
               pastChooseColor = undefined;
-              eventList.forEach((n) => {
-                n.classList.toggle("flipped");
-                console.log(n);
-              });
-              eventList = [];
-              console.log("not find!");
+              setTimeout(() => {
+                openCard.forEach((n) => {
+                  n.classList.toggle("flipped");
+                  console.log(n);
+                });
+                openCard = [];
+              }, 700);
             }
+          }
+          if (pairCard === 6) {
+            setTimeout(() => {
+              alert("모두 맞추셨습니다!!");
+              openedCard.forEach((n) => {
+                n.classList.toggle("flipped");
+              });
+            }, 500);
           }
         });
       })(card);
