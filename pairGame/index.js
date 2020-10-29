@@ -49,11 +49,13 @@ function makeCard(width, height) {
           count++;
           const clickCard = e.target.parentNode.children[1];
           const chooseColor = clickCard.style.backgroundColor;
+          console.log(chooseColor, pastChooseColor);
           if (count === 1) {
             pastChooseColor = chooseColor;
           } else if (count === 2) {
             if (pastChooseColor === chooseColor) {
               pairCard++;
+              count = 0;
             } else {
             }
           }
