@@ -4,6 +4,7 @@ const height = 4;
 let count = 0;
 let pairCard = 0;
 let pastChooseColor;
+let eventList = [];
 function makeCard(width, height) {
   let condidate = [
     "red",
@@ -49,6 +50,8 @@ function makeCard(width, height) {
           count++;
           const clickCard = e.target.parentNode.children[1];
           const chooseColor = clickCard.style.backgroundColor;
+          eventList.push(e.target);
+          console.log(e.target);
           console.log(chooseColor, pastChooseColor);
           if (count === 1) {
             pastChooseColor = chooseColor;
@@ -56,7 +59,18 @@ function makeCard(width, height) {
             if (pastChooseColor === chooseColor) {
               pairCard++;
               count = 0;
+              pastChooseColor = undefined;
+              eventList = [];
+              console.log("find!");
             } else {
+              count = 0;
+              pastChooseColor = undefined;
+              eventList.forEach((n) => {
+                n.classList.toggle("flipped");
+                console.log(n);
+              });
+              eventList = [];
+              console.log("not find!");
             }
           }
         });
