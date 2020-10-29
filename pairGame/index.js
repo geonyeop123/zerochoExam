@@ -28,7 +28,7 @@ function makeCard(width, height) {
     );
   }
   for (let i = 0; i < width; i++) {
-    const body = document.body;
+    const mainContainer = document.querySelector(".mainContainer");
     const column = document.createElement("div");
     column.className = "column";
     for (let j = 0; j < height; j++) {
@@ -74,7 +74,6 @@ function makeCard(width, height) {
               setTimeout(() => {
                 openCard.forEach((n) => {
                   n.classList.toggle("flipped");
-                  console.log(n);
                 });
                 openCard = [];
               }, 700);
@@ -86,13 +85,22 @@ function makeCard(width, height) {
               openedCard.forEach((n) => {
                 n.classList.toggle("flipped");
               });
+              setTimeout(() => {
+                mainContainer.innerHTML = "";
+                makeCard(width, height);
+                count = 0;
+                pairCard = 0;
+                pastChooseColor = null;
+                openCard = [];
+                openedCard = [];
+              }, 600);
             }, 500);
           }
         });
       })(card);
       column.appendChild(card);
     }
-    body.appendChild(column);
+    mainContainer.appendChild(column);
   }
 }
 makeCard(width, height);
