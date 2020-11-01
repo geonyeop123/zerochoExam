@@ -6,7 +6,10 @@ let pairCard = 0;
 let pastChooseColor;
 let openCard = [];
 let openedCard = [];
+let clickFlag = true;
+
 function makeCard(width, height) {
+  clickFlag = false;
   let condidate = [
     "red",
     "red",
@@ -47,6 +50,9 @@ function makeCard(width, height) {
       cardInner.appendChild(cardBack);
       (function (c) {
         card.addEventListener("click", (e) => {
+          if (clickFlag === false) {
+            return;
+          }
           const clickCard = e.target.parentNode.children[1];
           const chooseColor = clickCard.style.backgroundColor;
           const thisCard = e.target.parentNode.parentNode;
@@ -71,11 +77,13 @@ function makeCard(width, height) {
             } else {
               count = 0;
               pastChooseColor = undefined;
+              clickFlag = false;
               setTimeout(() => {
                 openCard.forEach((n) => {
                   n.classList.toggle("flipped");
                 });
                 openCard = [];
+                clickFlag = true;
               }, 700);
             }
           }
@@ -102,5 +110,14 @@ function makeCard(width, height) {
     }
     mainContainer.appendChild(column);
   }
+  document.querySelectorAll(".card").forEach((card, index) => {
+    setTimeout(() => {
+      card.classList.toggle("flipped");
+    }, 1000 + 100 * index);
+    setTimeout(() => {
+      card.classList.toggle("flipped");
+      clickFlag = true;
+    }, 4000);
+  });
 }
 makeCard(width, height);
