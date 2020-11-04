@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hearth Stone</title>
+  <script defer src='index.js'></script>
+  <style>
+    *{
+      box-sizing: border-box;
+      margin: 0;
+    }
+    html,body{
+      height:100%;
+      width:100%;
+    }
+    .mainStage{
+      height : 100%;
+      display: inline-block;
+      width: 100%;
+    }
+    .rival-stage,.my-stage{
+      width:100%;
+      height:50%
+      
+    }
+    .rival-stage{
+      background-color: red;
+    }
+    .my-stage{
+      background-color: yellow;
+    }
+    .card{
+      width : 60px;
+      height: 80px;
+      border:1px solid black;
+      background-color: white;
+      position:relative;
+    }
+    .card-cost, .card-att, .card-hp{
+      border-radius: 50%;
+      width:20px;
+      height:20px;
+      padding-top : 2px;
+      text-align: center;
+      color:white;
+      font-size:13px;
+      border: 1px solid black;
+    }
+    .card-cost{
+      position:absolute;
+      top:0px;
+      left: 0px;
+      background-color: blue;
+    }
+    .card-att{
+      position:absolute;
+      bottom:0px;
+      left:0px;
+      background-color: yellow;
+      color:black;
+      
+    }
+    .card-hp{
+      position:absolute;
+      bottom:0px;
+      right:0px;
+      background-color: red;
+      color:white;
+    }
+  </style>
+</head>
+<body>
+  <div class ='mainStage'>
+    <div class="rival-stage">
+      <div class="rival-field">
+        <div class="rival-deck">
+          <div class="card">
+            <div class="card-cost">3</div>
+            <div class="card-att">2</div>
+            <div class="card-hp">1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="my-stage">
+      <div class="my-field">
+        <div class="my-deck">
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
