@@ -84,13 +84,20 @@
     #rival-hero{
       margin-bottom:20px;
     }
+    .selectCard{
+      border : 1px solid red;
+    }
+    .turnOverCard{
+      background-color: gray;
+    }
   </style>
 </head>
 
 <body>
       <div class="rival-field">
+        <div>코스트 : <span class = 'rival-cost'>10</span></div>
+        <div class="name">적 영웅</div>
         <div class="rival-hero" id='rival-hero'>
-          <div class="name">적 영웅</div>
         </div>
       </div>
       <div class="rival-deck">
@@ -98,8 +105,9 @@
     <hr></hr>
       <div class="my-field">
         <div class="my-hero">
-          <div class="name">내 영웅</div>
         </div>
+        <div class="name">내 영웅</div>
+        <div>코스트 : <span class = 'my-cost'>10</span></div>
       </div>
         <div class="my-deck">
         </div>

@@ -15,7 +15,8 @@ const my = {
   deckData: [],
   fieldData: [],
 };
-
+let chooseCard;
+let turn = true;
 function Card(hero) {
   if (hero) {
     this.hero = true;
@@ -27,11 +28,9 @@ function Card(hero) {
     this.cost = Math.ceil((this.att + this.hp) / 2);
   }
 }
-
 function cardFactory(hero) {
   return new Card(hero);
 }
-
 function showCard(data) {
   const card = document.querySelector(".hidden .card").cloneNode(true);
   if (data.cost) {
@@ -44,20 +43,33 @@ function showCard(data) {
   card.querySelector(".card-att").textContent = data.att;
   return card;
 }
-
 function makeDeck(count, who) {
   const whoIs = who ? my : rival;
   for (let i = 0; i < count; i++) {
     whoIs.deckData.push(cardFactory());
   }
   whoIs.deckData.forEach((data) => {
-    whoIs.deckTag.appendChild(showCard(data));
+    const card = showCard(data);
+    card.addEventListener("click", () => {
+      const whoIs = turn ? my : rival;
+      const enemy = !turn ? my : rival;
+      if (
+        (!chooseCard || (enemy.fieldData.includes(card) && enemy.hero)) &&
+        enemy.deckData.includes(card)
+      ) {
+        return;
+      }
+      chooseCard = card;
+      card.classList.add("selectCard");
+    });
+    whoIs.deckTag.appendChild(card);
   });
 }
 function makeHero(who) {
   const whoIs = who ? my : rival;
   whoIs.hero = cardFactory(true);
-  whoIs.heroTag.appendChild(showCard(whoIs.hero));
+  const card = showCard(whoIs.hero);
+  whoIs.heroTag.appendChild(card);
 }
 function init() {
   makeDeck(5, true);
