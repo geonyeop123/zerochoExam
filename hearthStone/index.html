@@ -11,28 +11,45 @@
       box-sizing: border-box;
       margin: 0;
     }
-    .hidden{
+
+    .hidden {
       display: none;
     }
+
     html,
     body {
       height: 100%;
       width: 100%;
     }
-    .rival-field,.my-field{
+
+    .rival-stage,
+    .my-stage {
       display: inline-block;
       vertical-align: top;
     }
-    .rival-deck,.rival-field,.my-field,.my-deck,.card{
+
+    .rival-deck,
+    .my-stage,
+    .rival-stage,
+    .rival-field,
+    .my-field,
+    .my-deck,
+    .card {
       text-align: center;
     }
-    .rival-field,.my-field{
-      border:1px solid black;
-      padding:10px;
+
+    .rival-stage,
+    .my-stage {
+      border: 1px solid black;
+      padding: 10px;
     }
-    .rival-deck,.my-deck{
-      margin-left:50px;
+
+    .rival-deck,
+    .my-deck {
+      margin-left: 50px;
+      padding-bottom: 20px;
     }
+
     .card {
       width: 60px;
       height: 80px;
@@ -78,46 +95,59 @@
       background-color: red;
       color: white;
     }
-    .my-hero{
-      margin-top:20px;
+
+    .my-hero {
+      margin-top: 20px;
     }
-    #rival-hero{
-      margin-bottom:20px;
+
+    #rival-hero {
+      margin-bottom: 20px;
     }
-    .selectCard{
-      border : 1px solid red;
+
+    .selectCard {
+      border: 2px solid red;
     }
-    .turnOverCard{
+    .turn{
+      border:2px solid rgb(204, 18, 204);
+    }
+    .turnOverCard {
       background-color: gray;
     }
   </style>
 </head>
 
 <body>
-      <div class="rival-field">
-        <div>코스트 : <span class = 'rival-cost'>10</span></div>
-        <div class="name">적 영웅</div>
-        <div class="rival-hero" id='rival-hero'>
-        </div>
-      </div>
-      <div class="rival-deck">
-      </div>
-    <hr></hr>
-      <div class="my-field">
-        <div class="my-hero">
-        </div>
-        <div class="name">내 영웅</div>
-        <div>코스트 : <span class = 'my-cost'>10</span></div>
-      </div>
-        <div class="my-deck">
-        </div>
-        <div class="hidden">
-          <div class="card">
-            <div class="card-cost"></div>
-            <div class="card-att"></div>
-            <div class="card-hp"></div>
-          </div>
-        </div>
+  <div class="rival-stage">
+    <div>코스트 : <span class='rival-cost'>10</span></div>
+    <div class="name">적 영웅</div>
+    <div class="rival-hero" id='rival-hero'>
+    </div>
+    <div class="rival-field">
+    </div>
+  </div>
+  <div class="rival-deck">
+  </div>
+  <button class="turnButton">
+    TURN CHANGE
+  </button>
+  <hr>
+  </hr>
+  <div class="my-stage">
+    <div class="my-field"></div>
+    <div class="my-hero">
+    </div>
+    <div class="name">내 영웅</div>
+    <div>코스트 : <span class='my-cost'>10</span></div>
+  </div>
+  <div class="my-deck">
+  </div>
+  <div class="hidden">
+    <div class="card">
+      <div class="card-cost"></div>
+      <div class="card-att"></div>
+      <div class="card-hp"></div>
+    </div>
+  </div>
 </body>
 
 </html>
