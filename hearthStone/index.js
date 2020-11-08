@@ -1,20 +1,4 @@
 "use strict";
-document.querySelector(".turnButton").addEventListener("click", () => {
-  const whoIs = turn ? my : rival;
-  turn = !turn;
-  whoIs.cost.innerText = 10;
-  my.stageTag.classList.toggle("turn");
-  rival.stageTag.classList.toggle("turn");
-  whoIs.stageTag.querySelectorAll(".card").forEach((card) => {
-    // 액션 CSS 제거
-    if (card.classList.contains("selectCard")) {
-      card.classList.remove("selectCard");
-    }
-    if (card.classList.contains("turnOverCard")) {
-      card.classList.remove("turnOverCard");
-    }
-  });
-});
 const rival = {
   deckTag: document.querySelector(".rival-deck"),
   fieldTag: document.querySelector(".rival-field"),
@@ -35,9 +19,43 @@ const my = {
   fieldData: [],
   cost: document.querySelector(".my-cost"),
 };
+const player = [my, rival];
 let chooseCard;
-let turn = true;
-function resetGame() {}
+let turn;
+document.querySelector(".turnButton").addEventListener("click", () => {
+  const whoIs = turn ? my : rival;
+  turn = !turn;
+  whoIs.cost.innerText = 10;
+  my.stageTag.classList.toggle("turn");
+  rival.stageTag.classList.toggle("turn");
+  whoIs.stageTag.querySelectorAll(".card").forEach((card) => {
+    // 액션 CSS 제거
+    if (card.classList.contains("selectCard")) {
+      card.classList.remove("selectCard");
+    }
+    if (card.classList.contains("turnOverCard")) {
+      card.classList.remove("turnOverCard");
+    }
+  });
+});
+function resetGame() {
+  player.forEach((i) => {
+    i.deckTag.innerHTML = "";
+    i.fieldTag.innerHTML = "";
+    i.heroTag.innerHTML = "";
+    i.hero = undefined;
+    i.deckData = [];
+    i.fieldData = [];
+    i.cost.textContent = 10;
+    if (i.stageTag.classList.contains("turn")) {
+      i.stageTag.classList.remove("turn");
+    }
+    if (i.stageTag.classList.contains("turnOverCard")) {
+      i.stageTag.classList.remove("turnOverCard");
+    }
+  });
+  startGame();
+}
 function Card(hero) {
   if (hero) {
     this.hero = true;
@@ -67,7 +85,7 @@ function linkCard(data, place) {
     const whoIs = turn ? my : rival;
     const enemy = !turn ? my : rival;
     if (whoIs.deckData.includes(data)) {
-      // 카드 소환
+      // 자신의 덱의 카드를 선택 시 카드 소환
       const liveCost = whoIs.cost.innerText;
       if (liveCost < data.cost) {
         return;
@@ -83,6 +101,7 @@ function linkCard(data, place) {
       }
     }
     if (whoIs.fieldData.includes(data) || whoIs.hero === data) {
+      // 내 필드의 카드 선택 시
       whoIs.stageTag.querySelectorAll(".card").forEach((n) => {
         if (n.classList.contains("selectCard")) {
           n.classList.remove("selectCard");
@@ -90,11 +109,13 @@ function linkCard(data, place) {
       });
       card.classList.add("selectCard");
       if (!card.classList.contains("turnOverCard")) {
+        // 턴오버된 카드가 아닐 시 카드 선택
         chooseCard = data;
       }
       return;
     }
     if (chooseCard && (enemy.fieldData.includes(data) || enemy.hero === data)) {
+      // 선택된 카드가 있고, 상대의 필드에 있는 카드를 선택 시
       data.hp = data.hp - chooseCard.att;
       card.querySelector(".card-hp").innerText = data.hp;
       if (data.hp <= 0) {
@@ -102,6 +123,7 @@ function linkCard(data, place) {
           enemy.stageTag.classList.add("turnOverCard");
           setTimeout(() => {
             alert("승리");
+            resetGame();
           }, 500);
         } else {
           const index = enemy.fieldData.indexOf(data);
@@ -138,11 +160,15 @@ function makeHero(who) {
   whoIs.hero = cardFactory(true);
   linkCard(whoIs.hero, whoIs.heroTag);
 }
-function init() {
+function startGame() {
   makeDeck(5, true);
   makeDeck(5, false);
   makeHero(true);
   makeHero(false);
+  turn = true;
   my.stageTag.classList.add("turn");
+}
+function init() {
+  startGame();
 }
 init();
