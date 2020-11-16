@@ -4,6 +4,13 @@ let tetrisData = [];
 let currentBlock;
 let currentPosition;
 let currentBlockIndex;
+let stopFlag = false;
+let gameOver = false;
+const derection = {
+  down: 0,
+  left: 1,
+  right: 2,
+};
 const block = [
   [
     {
@@ -198,52 +205,148 @@ const block = [
     },
   ],
 ];
-function tick() {
-  currentPosition[0] += 1;
+function checkMove(block, derection) {
+  let pastPosition = [];
+  currentPosition.forEach((n) => {
+    pastPosition.push(n);
+  });
+  switch (derection) {
+    case 0: // down
+      currentPosition[0] += 1;
+      break;
+    case 1: // left
+      currentPosition[1] -= 1;
+      break;
+    case 2: // right
+      currentPosition[1] += 1;
+      break;
+  }
   let canGo = true;
-  if (currentBlock.numCode < 7) {
-    if (currentPosition[0] + 3 > tetrisData.length) {
-      // 스테이지 끝인가?
-      canGo = false;
+  block.shape[currentBlockIndex].forEach((col, i) => {
+    // 스테이지의 끝인가 ?
+    col.forEach((row, j) => {
+      if (row && !tetrisData[currentPosition[0] + i]) {
+        canGo = false;
+      } else if (
+        row &&
+        tetrisData[currentPosition[0] + i][currentPosition[1] + j] === undefined
+      ) {
+        canGo = false;
+      }
+    });
+  });
+  console.log(canGo);
+  if (canGo) {
+    block.shape[currentBlockIndex].forEach((col, i) => {
+      // 블록이 있는가?
+      col.forEach((row, j) => {
+        if (
+          row &&
+          tetrisData[currentPosition[0] + i][currentPosition[1] + j] >= 10
+        ) {
+          canGo = false;
+        }
+      });
+    });
+  }
+  if (canGo) {
+    if (tetrisData[pastPosition[0]]) {
+      for (
+        let i = pastPosition[0];
+        i < pastPosition[0] + currentBlock.shape[0].length;
+        i++
+      ) {
+        for (
+          let j = pastPosition[1];
+          j < pastPosition[1] + currentBlock.shape[0].length;
+          j++
+        ) {
+          if (!tetrisData[i]) {
+            continue;
+          }
+          if (tetrisData[i][j] < 10) {
+            tetrisData[i][j] = 0;
+          }
+        }
+      }
     } else {
-      for (let i = currentPosition[0]; i < currentPosition[0] + 3; i++) {
-        // 다른 블록이 있는가?
-        for (let j = currentPosition[1]; j < currentPosition[1] + 3; j++) {
-          if (tetrisData[i][j] > 10) {
-            canGo = false;
+      for (
+        let i = pastPosition[0] + 1;
+        i < pastPosition[0] + currentBlock.shape[0].length;
+        i++
+      ) {
+        for (
+          let j = pastPosition[1];
+          j < pastPosition[1] + currentBlock.shape[0].length;
+          j++
+        ) {
+          if (tetrisData[i][j] < 10) {
+            tetrisData[i][j] = 0;
           }
         }
       }
     }
   }
-  if (canGo) {
-    if (tetrisData[currentPosition[0] - 1]) {
-      for (
-        let i = currentPosition[0] - 1;
-        i < currentPosition[0] - 1 + 3;
-        i++
-      ) {
-        for (let j = currentPosition[1]; j < currentPosition[1] + 3; j++) {
-          tetrisData[i][j] = 0;
-        }
-      }
-    } else {
-      for (let i = currentPosition[0]; i < currentPosition[0] - 1 + 2; i++) {
-        for (let j = currentPosition[1]; j < currentPosition[1] + 3; j++) {
-          tetrisData[i][j] = 0;
-        }
-      }
+  if (!canGo) {
+    switch (derection) {
+      case 0: // down
+        currentPosition[0] -= 1;
+        break;
+      case 1: // left
+        currentPosition[1] += 1;
+        break;
+      case 2: // right
+        currentPosition[1] -= 1;
+        break;
     }
+  }
+  return canGo;
+}
+
+function tick() {
+  let canGo = checkMove(currentBlock, derection.down);
+  if (canGo) {
     currentBlock.shape[currentBlockIndex].forEach((col, i) => {
       col.forEach((row, j) => {
         if (row) {
-          tetrisData[currentPosition[0] + i][currentPosition[1] + j] = row;
+          tetrisData[currentPosition[0] + i][currentPosition[1] + j] =
+            currentBlock.numCode;
         }
       });
     });
     draw();
+    return true;
   } else {
+    currentBlock.shape[currentBlockIndex].forEach((col, i) => {
+      col.forEach((row, j) => {
+        if (row) {
+          tetrisData[currentPosition[0] + i][currentPosition[1] + j] *= 10;
+        }
+      });
+    });
+    tetrisData.forEach((col, i) => {
+      let count = 0;
+      col.forEach((row, j) => {
+        if (row === 0) {
+          count++;
+        }
+      });
+      if (count === 0) {
+        console.log(tetrisData.splice(i, 1));
+        const column = [...Array(10).keys()].fill(0);
+        tetrisData.unshift(column);
+        tetris.removeChild(tetris.children[i]);
+        const tr = document.createElement("tr");
+        [...Array(10).keys()].forEach((n) => {
+          const td = document.createElement("td");
+          tr.appendChild(td);
+        });
+        tetris.prepend(tr);
+      }
+    });
+    draw();
     generate();
+    return false;
   }
 }
 function draw() {
@@ -276,14 +379,104 @@ function generate() {
   currentPosition = [-1, 3];
   currentBlockIndex = 0;
   console.log(currentBlock);
+
   currentBlock.shape[0].slice(1).forEach((col, i) => {
     col.forEach((row, j) => {
       if (row) {
-        tetrisData[i][j + 3] = row;
+        if (tetrisData[i][j + 3]) {
+          gameOver = true;
+        }
+        tetrisData[i][j + 3] = currentBlock.numCode;
       }
     });
   });
+  if (gameOver) {
+    alert("패배하셨습니다 ㅠㅠ");
+    tetrisData = [];
+    tetris.innerHTML = "";
+    gameOver = false;
+    init();
+    generate();
+  }
   draw();
+}
+let downBlock = setInterval(tick, 1000);
+function stop() {
+  clearInterval(downBlock);
 }
 init();
 generate();
+
+window.addEventListener("keydown", (e) => {
+  const key = e.code;
+  let canGo;
+  switch (key) {
+    case "ArrowLeft":
+      canGo = checkMove(currentBlock, derection.left);
+      break;
+    case "ArrowRight":
+      canGo = checkMove(currentBlock, derection.right);
+      break;
+    default:
+      return;
+  }
+  if (canGo) {
+    currentBlock.shape[currentBlockIndex].forEach((col, i) => {
+      col.forEach((row, j) => {
+        if (row) {
+          tetrisData[currentPosition[0] + i][currentPosition[1] + j] =
+            currentBlock.numCode;
+        }
+      });
+    });
+    draw();
+  } else {
+    return;
+  }
+});
+window.addEventListener("keydown", (e) => {
+  const key = e.code;
+  let canGo;
+  switch (key) {
+    case "Space":
+      while (tick());
+      break;
+    case "ArrowDown":
+      tick();
+      break;
+    case "ArrowUp":
+      const pastIndex = currentBlockIndex;
+      if (currentBlock.shape[currentBlockIndex + 1]) {
+        currentBlockIndex += 1;
+      } else {
+        currentBlockIndex = 0;
+      }
+      canGo = checkMove(currentBlock);
+      if (canGo) {
+        currentBlock.shape[currentBlockIndex].forEach((col, i) => {
+          col.forEach((row, j) => {
+            if (row) {
+              tetrisData[currentPosition[0] + i][currentPosition[1] + j] =
+                currentBlock.numCode;
+            }
+          });
+        });
+        draw();
+      } else {
+        currentBlockIndex = pastIndex;
+      }
+      break;
+  }
+});
+document.querySelector(".stop").addEventListener("click", () => {
+  if (!stopFlag) {
+    stop();
+    stopFlag = true;
+  }
+});
+document.querySelector(".start").addEventListener("click", () => {
+  if (stopFlag) {
+    downBlock = setInterval(tick, 1000);
+    stopFlag = false;
+  }
+});
