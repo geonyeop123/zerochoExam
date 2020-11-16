@@ -1,6 +1,9 @@
 "use strict";
 const tetris = document.querySelector("#tetris");
 let tetrisData = [];
+let currentBlock;
+let currentPosition;
+let currentBlockIndex;
 const block = [
   [
     {
@@ -195,104 +198,92 @@ const block = [
     },
   ],
 ];
-let currentBlock;
-let currentPosition;
-function canMoveCheck() {}
 function tick() {
-  if (canGo(currentBlock)) {
+  currentPosition[0] += 1;
+  let canGo = true;
+  if (currentBlock.numCode < 7) {
+    if (currentPosition[0] + 3 > tetrisData.length) {
+      // 스테이지 끝인가?
+      canGo = false;
+    } else {
+      for (let i = currentPosition[0]; i < currentPosition[0] + 3; i++) {
+        // 다른 블록이 있는가?
+        for (let j = currentPosition[1]; j < currentPosition[1] + 3; j++) {
+          if (tetrisData[i][j] > 10) {
+            canGo = false;
+          }
+        }
+      }
+    }
   }
-  draw();
+  if (canGo) {
+    if (tetrisData[currentPosition[0] - 1]) {
+      for (
+        let i = currentPosition[0] - 1;
+        i < currentPosition[0] - 1 + 3;
+        i++
+      ) {
+        for (let j = currentPosition[1]; j < currentPosition[1] + 3; j++) {
+          tetrisData[i][j] = 0;
+        }
+      }
+    } else {
+      for (let i = currentPosition[0]; i < currentPosition[0] - 1 + 2; i++) {
+        for (let j = currentPosition[1]; j < currentPosition[1] + 3; j++) {
+          tetrisData[i][j] = 0;
+        }
+      }
+    }
+    currentBlock.shape[currentBlockIndex].forEach((col, i) => {
+      col.forEach((row, j) => {
+        if (row) {
+          tetrisData[currentPosition[0] + i][currentPosition[1] + j] = row;
+        }
+      });
+    });
+    draw();
+  } else {
+    generate();
+  }
 }
 function draw() {
-  tetrisData.forEach((tr, i) => {
-    tr.forEach((td, j) => {
-      if (td < 10 && td !== 0) {
-        tetris.children[i].children[j].classList.add(
-          `${currentBlock[0].color}`
-        );
-      } else if (td === 0) {
+  tetrisData.forEach((col, i) => {
+    col.forEach((row, j) => {
+      if (row === 0) {
         tetris.children[i].children[j].className = "";
+      } else if (row < 10) {
+        tetris.children[i].children[j].classList.add(`${currentBlock.color}`);
       }
     });
   });
 }
 function init() {
   const fragment = document.createDocumentFragment();
-  [...Array(20).keys()].forEach(() => {
+  [...Array(20).keys()].forEach((col, i) => {
     const tr = document.createElement("tr");
-    fragment.appendChild(tr);
-    [...Array(10).keys()].forEach(() => {
+    [...Array(10).keys()].forEach((row, j) => {
       const td = document.createElement("td");
       tr.appendChild(td);
     });
-    let column = [...Array(10).keys()].fill(0);
+    const column = [...Array(10).keys()].fill(0);
+    fragment.appendChild(tr);
     tetrisData.push(column);
   });
   tetris.appendChild(fragment);
 }
 function generate() {
-  if (!currentBlock) {
-    currentBlock = block[Math.floor(Math.random() * block.length)];
-    console.log(currentBlock[0].shape[0]);
-  }
+  currentBlock = block[Math.floor(Math.random() * block.length)][0];
   currentPosition = [-1, 3];
-  currentBlock[0].shape[0].slice(1).forEach((col, i) => {
+  currentBlockIndex = 0;
+  console.log(currentBlock);
+  currentBlock.shape[0].slice(1).forEach((col, i) => {
     col.forEach((row, j) => {
       if (row) {
-        tetrisData[i][3 + j] = currentBlock[0].numCode;
+        tetrisData[i][j + 3] = row;
       }
     });
   });
   draw();
 }
-function canGo(block) {
-  let flag = true;
-  const num = block[0].numCode;
-  const nextPosition = [currentPosition[0] + 1, currentPosition[1]];
-  let newPosition = [];
-  if (num < 7) {
-    if (currentPosition[0] + 3 === tetrisData.length - 1) {
-      return false;
-    } else {
-      for (let i = 0; i < 3; i++) {
-        const data = tetrisData[nextPosition[0] + i].slice(
-          nextPosition[1],
-          nextPosition[1] + 3
-        );
-        newPosition.push(data);
-      }
-      console.log(newPosition, "newPosition");
-      newPosition.forEach((col) => {
-        col.forEach((row) => {
-          if (row > 10) {
-            flag = false;
-          }
-        });
-      });
-    }
-  } else {
-    if (currentPosition[0] + 4 === tetrisData.length - 1) {
-      return false;
-    } else {
-      for (let i = 0; i < 4; i++) {
-        const data = tetrisData[nextPosition[0] + i].slice(
-          nextPosition[1],
-          nextPosition[1] + 4
-        );
-        newPosition.push(data);
-      }
-      console.log(newPosition, "newPosition");
-      newPosition.forEach((col) => {
-        col.forEach((row) => {
-          if (row > 10) {
-            flag = false;
-          }
-        });
-      });
-    }
-    return flag;
-  }
-}
-// let blockDown = setInterval(tick, 200);
 init();
 generate();
