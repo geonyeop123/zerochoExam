@@ -6,44 +6,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tetris</title>
   <style>
-    #tetris{
+    #tetris {
       border-collapse: collapse;
     }
-    td{
-      width:20px;
-      height:20px;
-      border: 1px solid black;
+    td {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid black;
     }
-    td.red{
-      background-color:red;
+    td.red {
+      background-color: red;
+      border: 1.5px solid black;
     }
-    td.orange{
+
+    td.orange {
       background-color: orange;
+      border: 1.5px solid black;
     }
-    td.yellow{
+
+    td.yellow {
       background-color: yellow;
+      border: 1.5px solid black;
     }
-    td.green{
-      background-color:green;
+
+    td.green {
+      background-color: green;
+      border: 1.5px solid black;
     }
-    td.blue{
-      background-color:blue;
+
+    td.blue {
+      background-color: blue;
+      border: 1.5px solid black;
     }
-    td.aqua{
-      background-color:aqua;
+
+    td.aqua {
+      background-color: aqua;
+      border: 1.5px solid black;
     }
-    td.fuchsia{
-      background-color:fuchsia;
+
+    td.fuchsia {
+      background-color: fuchsia;
+      border: 1.5px solid black;
+    }
+
+    #next {
+      margin-left : 10px;
+      border-collapse: collapse;
+    }
+    .tetrisColumn {
+      display: flex;
     }
   </style>
   <script defer src='index.js'></script>
 </head>
 
 <body>
-  <table id='tetris'></table>
+  <div class='tetrisColumn'>
+    <table id='tetris'></table>
+    <table id='next'>
+      <tr>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+      </tr>
+      <tr>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+      </tr>
+      <tr>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+      </tr>
+      <tr>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+        <td id = 'nextTd'></td>
+      </tr>
+    </table>
+  </div>
   <div class="buttons">
-    <button class = 'stop'>STOP</button>
-    <button class = 'start'>START</button>
+    <button class='stop'>STOP</button>
+    <button class='start'>START</button>
   </div>
 </body>
 

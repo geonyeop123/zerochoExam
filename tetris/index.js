@@ -1,7 +1,9 @@
 "use strict";
 const tetris = document.querySelector("#tetris");
+const next = document.querySelector("#next").querySelector("tbody");
 let tetrisData = [];
 let currentBlock;
+let nextBlock;
 let currentPosition;
 let currentBlockIndex;
 let stopFlag = false;
@@ -235,7 +237,6 @@ function checkMove(block, derection) {
       }
     });
   });
-  console.log(canGo);
   if (canGo) {
     block.shape[currentBlockIndex].forEach((col, i) => {
       // 블록이 있는가?
@@ -360,6 +361,18 @@ function draw() {
     });
   });
 }
+function nextDraw() {
+  next.querySelectorAll("td").forEach((td) => {
+    td.className = "";
+  });
+  nextBlock.shape[0].forEach((col, i) => {
+    col.forEach((row, j) => {
+      if (row < 10 && row !== 0) {
+        next.children[i].children[j + 1].classList.add(`${nextBlock.color}`);
+      }
+    });
+  });
+}
 function init() {
   const fragment = document.createDocumentFragment();
   [...Array(20).keys()].forEach((col, i) => {
@@ -375,11 +388,16 @@ function init() {
   tetris.appendChild(fragment);
 }
 function generate() {
-  currentBlock = block[Math.floor(Math.random() * block.length)][0];
+  if (!currentBlock) {
+    currentBlock = block[Math.floor(Math.random() * block.length)][0];
+  } else {
+    currentBlock = nextBlock;
+  }
+  nextBlock = block[Math.floor(Math.random() * block.length)][0];
   currentPosition = [-1, 3];
   currentBlockIndex = 0;
   console.log(currentBlock);
-
+  nextDraw();
   currentBlock.shape[0].slice(1).forEach((col, i) => {
     col.forEach((row, j) => {
       if (row) {
