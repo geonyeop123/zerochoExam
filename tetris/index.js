@@ -225,70 +225,41 @@ function checkMove(block, derection) {
   }
   let canGo = true;
   block.shape[currentBlockIndex].forEach((col, i) => {
-    // 스테이지의 끝인가 ?
+    // 움직일 수 없는가?
     col.forEach((row, j) => {
-      if (row && !tetrisData[currentPosition[0] + i]) {
-        canGo = false;
-      } else if (
+      if (
         row &&
-        tetrisData[currentPosition[0] + i][currentPosition[1] + j] === undefined
+        (!tetrisData[currentPosition[0] + i] ||
+          tetrisData[currentPosition[0] + i][currentPosition[1] + j] ===
+            undefined ||
+          tetrisData[currentPosition[0] + i][currentPosition[1] + j] >= 10)
       ) {
         canGo = false;
       }
     });
   });
   if (canGo) {
-    block.shape[currentBlockIndex].forEach((col, i) => {
-      // 블록이 있는가?
-      col.forEach((row, j) => {
-        if (
-          row &&
-          tetrisData[currentPosition[0] + i][currentPosition[1] + j] >= 10
-        ) {
-          canGo = false;
-        }
-      });
-    });
-  }
-  if (canGo) {
-    if (tetrisData[pastPosition[0]]) {
+    // 움직이기 전 데이터를 지운다.
+    for (
+      let i = tetrisData[pastPosition[0]] // position상 데이터가 존재하지 않는 경우 맨 윗줄을 지운다.
+        ? pastPosition[0]
+        : pastPosition[0] + 1;
+      i < pastPosition[0] + currentBlock.shape[0].length;
+      i++
+    ) {
       for (
-        let i = pastPosition[0];
-        i < pastPosition[0] + currentBlock.shape[0].length;
-        i++
+        let j = pastPosition[1];
+        j < pastPosition[1] + currentBlock.shape[0].length;
+        j++
       ) {
-        for (
-          let j = pastPosition[1];
-          j < pastPosition[1] + currentBlock.shape[0].length;
-          j++
-        ) {
-          if (!tetrisData[i]) {
-            continue;
-          }
-          if (tetrisData[i][j] < 10) {
-            tetrisData[i][j] = 0;
-          }
-        }
-      }
-    } else {
-      for (
-        let i = pastPosition[0] + 1;
-        i < pastPosition[0] + currentBlock.shape[0].length;
-        i++
-      ) {
-        for (
-          let j = pastPosition[1];
-          j < pastPosition[1] + currentBlock.shape[0].length;
-          j++
-        ) {
-          if (tetrisData[i][j] < 10) {
-            tetrisData[i][j] = 0;
-          }
+        if (tetrisData[i][j] < 10) {
+          tetrisData[i][j] = 0;
         }
       }
     }
   }
   if (!canGo) {
+    // 움직일 수 없는 경우 현재 변경해 둔 포지션을 되돌린다.
     switch (derection) {
       case 0: // down
         currentPosition[0] -= 1;
@@ -303,7 +274,6 @@ function checkMove(block, derection) {
   }
   return canGo;
 }
-
 function tick() {
   let canGo = checkMove(currentBlock, derection.down);
   if (canGo) {
@@ -333,6 +303,7 @@ function tick() {
         }
       });
       if (count === 0) {
+        // 한 줄이 다 찼을 경우
         console.log(tetrisData.splice(i, 1));
         const column = [...Array(10).keys()].fill(0);
         tetrisData.unshift(column);
@@ -396,7 +367,6 @@ function generate() {
   nextBlock = block[Math.floor(Math.random() * block.length)][0];
   currentPosition = [-1, 3];
   currentBlockIndex = 0;
-  console.log(currentBlock);
   nextDraw();
   currentBlock.shape[0].slice(1).forEach((col, i) => {
     col.forEach((row, j) => {
@@ -418,14 +388,15 @@ function generate() {
   }
   draw();
 }
-let downBlock = setInterval(tick, 1000);
 function stop() {
   clearInterval(downBlock);
 }
 init();
 generate();
+let downBlock = setInterval(tick, 1000);
 
 window.addEventListener("keydown", (e) => {
+  if (stopFlag) return;
   const key = e.code;
   let canGo;
   switch (key) {
@@ -453,6 +424,7 @@ window.addEventListener("keydown", (e) => {
   }
 });
 window.addEventListener("keydown", (e) => {
+  if (stopFlag) return;
   const key = e.code;
   let canGo;
   switch (key) {
