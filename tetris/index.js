@@ -8,6 +8,8 @@ let currentPosition;
 let currentBlockIndex;
 let stopFlag = false;
 let gameOver = false;
+let blockCount = 0;
+let tickTimer = 1000;
 const direction = {
   down: 0,
   left: 1,
@@ -275,6 +277,7 @@ function checkMove(block, direction) {
   return canGo;
 }
 function tick() {
+  // 한칸 아래로
   let canGo = checkMove(currentBlock, direction.down);
   if (canGo) {
     currentBlock.shape[currentBlockIndex].forEach((col, i) => {
@@ -288,6 +291,7 @@ function tick() {
     draw();
     return true;
   } else {
+    // 블록을 멈춘다
     currentBlock.shape[currentBlockIndex].forEach((col, i) => {
       col.forEach((row, j) => {
         if (row) {
@@ -296,6 +300,7 @@ function tick() {
       });
     });
     tetrisData.forEach((col, i) => {
+      // 완성된 줄이 있는가?
       let count = 0;
       col.forEach((row, j) => {
         if (row === 0) {
@@ -304,7 +309,7 @@ function tick() {
       });
       if (count === 0) {
         // 한 줄이 다 찼을 경우
-        console.log(tetrisData.splice(i, 1));
+        blockCount++;
         const column = [...Array(10).keys()].fill(0);
         tetrisData.unshift(column);
         tetris.removeChild(tetris.children[i]);
@@ -314,6 +319,11 @@ function tick() {
           tr.appendChild(td);
         });
         tetris.prepend(tr);
+      }
+      if (blockCount && blockCount % 5 === 0) {
+        clearInterval(downBlock);
+        tickTimer = Math.ceil((tickTimer / 11) * 10);
+        downBlock = setInterval(tick, tickTimer);
       }
     });
     draw();
@@ -393,7 +403,7 @@ function stop() {
 }
 init();
 generate();
-let downBlock = setInterval(tick, 1000);
+let downBlock = setInterval(tick, tickTimer);
 
 window.addEventListener("keydown", (e) => {
   if (stopFlag) return;
