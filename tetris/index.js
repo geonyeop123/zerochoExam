@@ -8,7 +8,7 @@ let currentPosition;
 let currentBlockIndex;
 let stopFlag = false;
 let gameOver = false;
-const derection = {
+const direction = {
   down: 0,
   left: 1,
   right: 2,
@@ -207,12 +207,12 @@ const block = [
     },
   ],
 ];
-function checkMove(block, derection) {
+function checkMove(block, direction) {
   let pastPosition = [];
   currentPosition.forEach((n) => {
     pastPosition.push(n);
   });
-  switch (derection) {
+  switch (direction) {
     case 0: // down
       currentPosition[0] += 1;
       break;
@@ -260,7 +260,7 @@ function checkMove(block, derection) {
   }
   if (!canGo) {
     // 움직일 수 없는 경우 현재 변경해 둔 포지션을 되돌린다.
-    switch (derection) {
+    switch (direction) {
       case 0: // down
         currentPosition[0] -= 1;
         break;
@@ -275,7 +275,7 @@ function checkMove(block, derection) {
   return canGo;
 }
 function tick() {
-  let canGo = checkMove(currentBlock, derection.down);
+  let canGo = checkMove(currentBlock, direction.down);
   if (canGo) {
     currentBlock.shape[currentBlockIndex].forEach((col, i) => {
       col.forEach((row, j) => {
@@ -401,10 +401,10 @@ window.addEventListener("keydown", (e) => {
   let canGo;
   switch (key) {
     case "ArrowLeft":
-      canGo = checkMove(currentBlock, derection.left);
+      canGo = checkMove(currentBlock, direction.left);
       break;
     case "ArrowRight":
-      canGo = checkMove(currentBlock, derection.right);
+      canGo = checkMove(currentBlock, direction.right);
       break;
     default:
       return;
