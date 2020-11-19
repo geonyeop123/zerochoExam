@@ -9,7 +9,7 @@ let currentBlockIndex;
 let stopFlag = false;
 let gameOver = false;
 let blockCount = 0;
-let tickTimer = 1000;
+let tickTimer = 800;
 const direction = {
   down: 0,
   left: 1,
@@ -254,7 +254,7 @@ function checkMove(block, direction) {
         j < pastPosition[1] + currentBlock.shape[0].length;
         j++
       ) {
-        if (tetrisData[i][j] < 10) {
+        if (tetrisData[i] && tetrisData[i][j] < 10) {
           tetrisData[i][j] = 0;
         }
       }
@@ -311,6 +311,7 @@ function tick() {
         // 한 줄이 다 찼을 경우
         blockCount++;
         const column = [...Array(10).keys()].fill(0);
+        tetrisData.splice(i, 1);
         tetrisData.unshift(column);
         tetris.removeChild(tetris.children[i]);
         const tr = document.createElement("tr");
@@ -319,11 +320,11 @@ function tick() {
           tr.appendChild(td);
         });
         tetris.prepend(tr);
-      }
-      if (blockCount && blockCount % 5 === 0) {
-        clearInterval(downBlock);
-        tickTimer = Math.ceil((tickTimer / 11) * 10);
-        downBlock = setInterval(tick, tickTimer);
+        if (blockCount % 5 === 0) {
+          clearInterval(downBlock);
+          tickTimer = Math.ceil((tickTimer / 11) * 10);
+          downBlock = setInterval(tick, tickTimer);
+        }
       }
     });
     draw();
@@ -393,6 +394,8 @@ function generate() {
     tetrisData = [];
     tetris.innerHTML = "";
     gameOver = false;
+    tickTimer = 800;
+    blockCount = 0;
     init();
     generate();
   }
